@@ -1,7 +1,16 @@
 import Button from '@mui/material/Button';
-import { StarIcon } from '@heroicons/react/20/solid'
-import { Rating, value } from '@mui/material'
-  const product = {
+import { Box, LinearProgress, Typography, Rating } from "@mui/material";
+import { Grid } from '@mui/material';
+
+// The correct way to import Material-UI's StarIcon
+import StarIcon from '@mui/icons-material/Star';
+
+// Assuming this is a local component file
+import ProductReviewCard from './ProductReviewCard';
+
+// If you are using 'value' from a state hook, it would be defined like this
+// const [value, setValue] = useState(someInitialValue);
+const product = {
     name: 'Basic Tee 6-Pack',
     price: '$192',
     href: '#',
@@ -57,7 +66,7 @@ function classNames(...classes) {
 
 export default function ProductDetails() {
     return (
-        <div className="bg-white">
+        <div className="bg-white lg:px-20">
             <div className="pt-6">
                 <nav aria-label="Breadcrumb">
                     <ol role="list" className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -218,7 +227,53 @@ export default function ProductDetails() {
                     </div>
 
                 </section>
+
+                {/* rating and reviews */}
+                <section>
+                    <h1 className="font-semibold text-lg pb-4">Recent Review & Rating</h1>
+                    <div className="border p-5">
+                        <Grid container spacing={7}>
+                            {/* Reviews Section - Takes up most of the left side */}
+                            <Grid item xs={7} >
+                                <div className="space-y-5">
+                                    {[1, 1, 1].map((item) => <ProductReviewCard />)}
+                                </div>
+                            </Grid>
+
+                            <Grid item xs={5}>
+                                <h1 className="text-xl font-semibold pb-1">Product Ratings</h1>
+                                <div className="flex items-center space-x-3">
+                                    <Rating value={4.6} precision={0.5} readOnly />
+                                    <p className="opacity-60">54890 Ratings</p>
+                                </div>
+
+                                <Box className="mt-5">
+                                    <div className="flex justify-end items-center space-x-3 mt-2">
+                                        <Typography variant="body2" className="text-sm">Excellent</Typography>
+                                        <Box sx={{ width: 160 }}> {/* same as w-40 */}
+                                            <LinearProgress
+                                                variant="determinate"
+                                                value={40} // percentage
+                                                sx={{
+                                                    height: 7, // same as h-2
+                                                    borderRadius: 4,
+                                                    "& .MuiLinearProgress-bar": {
+                                                        borderRadius: 5,
+                                                        backgroundColor: "rgb(22, 163, 74)", // Tailwind green-600
+                                                    },
+                                                    backgroundColor: "#d0d0d0", // Tailwind gray-200
+                                                }}
+                                            />
+                                        </Box>
+                                    </div>
+                                </Box>
+
+                            </Grid>
+                        </Grid>
+                    </div>
+                </section>
             </div>
         </div>
     )
 }
+
