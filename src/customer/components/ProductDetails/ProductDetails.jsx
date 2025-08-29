@@ -1,13 +1,11 @@
 import Button from '@mui/material/Button';
 import { Box, LinearProgress, Typography, Rating } from "@mui/material";
 import { Grid } from '@mui/material';
-
-// The correct way to import Material-UI's StarIcon
 import StarIcon from '@mui/icons-material/Star';
-
-// Assuming this is a local component file
 import ProductReviewCard from './ProductReviewCard';
-
+import HomeSectionCarosel from '../../components/HomeSectionCarosel/HomeSectionCarosel'
+import { mens_kurta } from '../../../Data/mens_kurta';
+import HomeSectionCard from '../HomeSectionCard/HomeSectionCard';
 // If you are using 'value' from a state hook, it would be defined like this
 // const [value, setValue] = useState(someInitialValue);
 const product = {
@@ -59,7 +57,13 @@ const product = {
         'The 6-Pack includes two black, two white, and two heather gray Basic Tees. Sign up for our subscription service and be the first to get new, exciting colors, like our upcoming "Charcoal Gray" limited release.',
 }
 const reviews = { href: '#', average: 4, totalCount: 117 }
-
+const ratingColors = {
+    "Excellent": "rgb(22, 163, 74)",  // Green
+    "Very Good": "rgb(59, 130, 246)", // Blue
+    "Good": "rgb(245, 158, 11)",      // Yellow-Orange
+    "Average": "rgb(234, 88, 12)",    // Orange
+    "Poor": "rgb(239, 68, 68)",       // Red
+};
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
@@ -230,50 +234,81 @@ export default function ProductDetails() {
 
                 {/* rating and reviews */}
                 <section>
-                    <h1 className="font-semibold text-lg pb-4">Recent Review & Rating</h1>
+                    <h1 className="font-semibold text-lg pb-6">Recent Review & Rating</h1>
                     <div className="border p-5">
-                        <Grid container spacing={7}>
-                            {/* Reviews Section - Takes up most of the left side */}
-                            <Grid item xs={7} >
+                        <Grid container spacing={5} justifyContent="space-between" paddingRight={60}>
+                            {/* Reviews Section */}
+                            <Grid item xs={12} md={7}>
                                 <div className="space-y-5">
-                                    {[1, 1, 1].map((item) => <ProductReviewCard />)}
+                                    {[1, 1, 1].map((item, index) => (
+                                        <ProductReviewCard key={index} />
+                                    ))}
                                 </div>
                             </Grid>
 
-                            <Grid item xs={5}>
+                            {/* Ratings Section */}
+                            <Grid item xs={12} md={5}>
                                 <h1 className="text-xl font-semibold pb-1">Product Ratings</h1>
+
                                 <div className="flex items-center space-x-3">
                                     <Rating value={4.6} precision={0.5} readOnly />
                                     <p className="opacity-60">54890 Ratings</p>
                                 </div>
 
-                                <Box className="mt-5">
-                                    <div className="flex justify-end items-center space-x-3 mt-2">
-                                        <Typography variant="body2" className="text-sm">Excellent</Typography>
-                                        <Box sx={{ width: 160 }}> {/* same as w-40 */}
-                                            <LinearProgress
-                                                variant="determinate"
-                                                value={40} // percentage
-                                                sx={{
-                                                    height: 7, // same as h-2
-                                                    borderRadius: 4,
-                                                    "& .MuiLinearProgress-bar": {
-                                                        borderRadius: 5,
-                                                        backgroundColor: "rgb(22, 163, 74)", // Tailwind green-600
-                                                    },
-                                                    backgroundColor: "#d0d0d0", // Tailwind gray-200
-                                                }}
-                                            />
-                                        </Box>
-                                    </div>
+                                <Box className="mt-5 space-y-3">
+                                    {[
+                                        { label: "Excellent", value: 60 },
+                                        { label: "Very Good", value: 40 },
+                                        { label: "Good", value: 25 },
+                                        { label: "Average", value: 20 },
+                                        { label: "Poor", value: 10 },
+                                    ].map((rating, idx) => (
+                                        <div
+                                            key={idx}
+                                            className="flex items-center space-x-5 w-full"
+                                        >
+                                            <Box sx={{ width: 90 }}>
+                                                <Typography variant="body2" className="text-sm">
+                                                    {rating.label}
+                                                </Typography>
+                                            </Box>
+                                            <Grid sx={{ flex: 1, maxWidth: 160 }}>
+                                                <LinearProgress
+                                                    variant="determinate"
+                                                    value={rating.value}
+                                                    sx={{
+                                                        height: 7,
+                                                        borderRadius: 4,
+                                                        "& .MuiLinearProgress-bar": {
+                                                            borderRadius: 5,
+                                                            backgroundColor: ratingColors[rating.label],
+                                                        },
+                                                        backgroundColor: "#d0d0d0",
+                                                    }}
+                                                />
+                                            </Grid>
+                                        </div>
+                                    ))}
                                 </Box>
 
                             </Grid>
+
+
                         </Grid>
                     </div>
                 </section>
+
+
+                {/* similar products */}
+                <section className="pt-10">
+                    <h1 className="py-5 text-xl font-bold">Similer Products</h1>
+                    <div className="flex flex-wrap space-y-5">
+                        {mens_kurta.map((item) => <HomeSectionCard product={item} />)}
+                    </div>
+                </section>
+
             </div>
         </div>
-    )
+    );
 }
 
