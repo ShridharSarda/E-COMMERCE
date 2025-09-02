@@ -7,7 +7,7 @@ const Cart = () => {
     <div>
       <div className='lg:grid grid-cols-3 lg:px-16 relative'>
         <div className='col-span-2'>
-          {[1,1,1,1].map((item)=> <CartItem />)}     
+          {[1, 1, 1, 1].map((item) => <CartItem />)}
         </div>
         <div className='px-5 lg:sticky lg:top-0 lg:h-screen mt-5 lg:mt-0'>
           <div className='border'>
@@ -35,15 +35,6 @@ const Cart = () => {
             <Button variant="contained" className='w-full mt-5' sx={{ px: "2.5rem", py: ".7rem", bgcolor: "#9155fd" }}>
               Checkout
             </Button>
-
-
-
-
-
-
-
-
-
           </div>
         </div>
 

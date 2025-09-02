@@ -6,7 +6,7 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { useLocation } from 'react-router-dom';
-import DeliveryAddressForm from './DeliveryAddressForm';
+import DeliveryAddressForm from './DeliveryAddressForm.jsx';
 import OrderSummary from './OrderSummary';
 const steps = ['login', 'Delevery Address', "Order Summary", 'Payment'];
 export default function Checkout() {
@@ -14,7 +14,7 @@ export default function Checkout() {
   const location = useLocation();
   const querySearch = new URLSearchParams(location.search)
 
-  const step = querySearch.get("step")
+const step = querySearch.get("step");
 
 
 
@@ -60,7 +60,7 @@ export default function Checkout() {
                 Back
               </Button>
             </Box>
-            <div>
+            <div className='mt-10'>
               {/* {<Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>} */}
               {step==2?<DeliveryAddressForm/>:<OrderSummary/>}
             </div>
