@@ -23,17 +23,6 @@ const CustomerRouters = () => {
                 <Route path='/checkout' element={<Checkout />}></Route>
                 <Route path='/account/order' element={<Order />}></Route>
                 <Route path='/account/order/:orderId' element={<OrderDetails />}></Route>
-                
-
-                {/* <Homepage/> */}
-                {/* <Product/> */}
-                {/* <ProductDetails/> */}
-                {/* <Cart/> */}
-                {/* <Checkout/> */}
-                {/* {<Order/>} */}
-                {/* <OrderDetails/> */}
-
-
             </Routes>
             <div>
                 <Footer />
