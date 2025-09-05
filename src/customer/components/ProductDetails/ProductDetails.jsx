@@ -6,6 +6,7 @@ import ProductReviewCard from './ProductReviewCard';
 import HomeSectionCarosel from '../../components/HomeSectionCarosel/HomeSectionCarosel'
 import { mens_kurta } from '../../../Data/mens_kurta';
 import HomeSectionCard from '../HomeSectionCard/HomeSectionCard';
+import { useNavigate } from 'react-router-dom';
 // If you are using 'value' from a state hook, it would be defined like this
 // const [value, setValue] = useState(someInitialValue);
 const product = {
@@ -69,6 +70,10 @@ function classNames(...classes) {
 }
 
 export default function ProductDetails() {
+    const navigate=useNavigate();
+    const handleAddToCart=()=>{
+        navigate("/cart")
+    }
     return (
         <div className="bg-white lg:px-20">
             <div className="pt-6">
@@ -190,7 +195,7 @@ export default function ProductDetails() {
                                         </div>
                                     </fieldset>
                                 </div>
-                                <Button variant="contained" sx={{ px: '2rem', py: '1rem', bgcolor: '#9155fd' }}>
+                                <Button  onClick={handleAddToCart}  variant="contained" sx={{ px: '2rem', py: '1rem', bgcolor: '#9155fd' }}>
                                     ADD to CART
                                 </Button>
                             </form>

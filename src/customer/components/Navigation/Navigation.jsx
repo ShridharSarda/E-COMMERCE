@@ -41,7 +41,7 @@ export default function Navigation() {
   };
 
   const handleCategoryClick = (category, section, item, close) => {
-    // navigate(`/${category.id}/${section.id}/${item.id}`);
+    navigate(`/${category.id}/${section.id}/${item.id}`);
     close();
   };
 
@@ -417,7 +417,7 @@ export default function Navigation() {
                         <MenuItem onClick={handleCloseUserMenu}>
                         Profile
                         </MenuItem>
-                        <MenuItem>
+                        <MenuItem onClick={()=>navigate("/account/order")}>
                         My Orders
                         </MenuItem>
 
