@@ -1,6 +1,9 @@
 import { Fragment, useEffect, useState } from "react";
 import { Dialog, Popover, Tab, Transition } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
+import { Modal } from '@mui/material'; 
+import AuthModal from "../../Auth/AuthModal";
+
 import {
   Bars3Icon,
   MagnifyingGlassIcon,
@@ -379,7 +382,7 @@ export default function Navigation() {
 
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  {true ? (
+                  {false ? (
                     <div>
                       <Avatar
                         className="text-white"
@@ -395,7 +398,7 @@ export default function Navigation() {
                         }}
                       >
                         S
-                        </Avatar>
+                      </Avatar>
                       {/* <Button
                         id="basic-button"
                         aria-controls={open ? "basic-menu" : undefined}
@@ -467,6 +470,7 @@ export default function Navigation() {
           </div>
         </nav>
       </header>
+       <AuthModal handleClose={handleClose} open={openAuthModal} />
      </div>
   );
 }
