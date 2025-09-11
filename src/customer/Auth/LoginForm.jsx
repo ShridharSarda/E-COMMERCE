@@ -1,19 +1,56 @@
 import React from "react";
 import { Button, TextField, Box, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
-export default function LoginForm() {
+import { useDispatch } from 'react-redux'
+import { login } from "../../State/Auth/Action";
+import { useEffect } from "react";
+import { getUser, register} from "../../State/Auth/Action";
+ export default function LoginForm() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
+    
+  
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const userData = {
+ 
       email: data.get("email"),
       password: data.get("password"),
     };
+
+
+
+   dispatch(login(userData))
     console.log("userData:", userData);
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   return (
     <Box

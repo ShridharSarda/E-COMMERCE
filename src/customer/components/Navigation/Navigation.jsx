@@ -1,8 +1,10 @@
 import { Fragment, useEffect, useState } from "react";
 import { Dialog, Popover, Tab, Transition } from "@headlessui/react";
-import { useNavigate } from "react-router-dom";
-import { Modal } from '@mui/material'; 
+import { useNavigate, useLocation } from "react-router-dom";
+import { Modal } from '@mui/material';
 import AuthModal from "../../Auth/AuthModal";
+import { useDispatch, useSelector } from "react-redux";
+import { getUser,logout } from "../../../State/Auth/Action";
 
 import {
   Bars3Icon,
@@ -10,25 +12,25 @@ import {
   ShoppingBagIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { navigation } from "./navigationData"; 
+import { navigation } from "./navigationData";
 import { Avatar, Button, Menu, MenuItem } from "@mui/material";
-  import { deepPurple } from "@mui/material/colors";
- import TextField from "@mui/material/TextField";
- function classNames(...classes) {
+import { deepPurple } from "@mui/material/colors";
+import TextField from "@mui/material/TextField";
+function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function Navigation() {
   const [open, setOpen] = useState(false);
-    const navigate = useNavigate(); // Add this line
+  const navigate = useNavigate(); // Add this line
 
-   const [openAuthModal, setOpenAuthModal] = useState(false);
+  const [openAuthModal, setOpenAuthModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const openUserMenu = Boolean(anchorEl);
   const jwt = localStorage.getItem("jwt");
- 
-   
-
+  const { auth } = useSelector(store => store)
+  const dispatch = useDispatch();
+  const location = useLocation();
   const handleUserClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -41,6 +43,7 @@ export default function Navigation() {
   };
   const handleClose = () => {
     setOpenAuthModal(false);
+
   };
 
   const handleCategoryClick = (category, section, item, close) => {
@@ -48,9 +51,39 @@ export default function Navigation() {
     close();
   };
 
- 
 
- 
+  useEffect(() => {
+    if (jwt) {
+      dispatch(getUser(jwt))
+    }
+  }, [jwt, auth.jwt])
+
+  useEffect(() => {
+    if (auth.user) {
+      handleClose()
+      if (location.pathname === "/login" || location.pathname === "/register") {
+        navigate(-1)
+      }
+    }
+  }, [auth.user])
+
+
+
+
+
+const handleLogout=()=>{
+    dispatch(logout())
+    handleCloseUserMenu()
+}
+
+
+
+
+
+
+
+
+
 
   return (
     <div className="bg-white pb-10">
@@ -238,14 +271,14 @@ export default function Navigation() {
 
               {/* Logo */}
               <div className="ml-4 flex lg:ml-0">
-                
-                  <span className="sr-only">Your Company</span>
-                  <img
-                    src="https://res.cloudinary.com/ddkso1wxi/image/upload/v1675919455/Logo/Copy_of_Zosh_Academy_nblljp.png"
-                    alt="Shopwithzosh"
-                    className="h-8 w-8 mr-2"
-                  />
-               
+
+                <span className="sr-only">Your Company</span>
+                <img
+                  src="https://res.cloudinary.com/ddkso1wxi/image/upload/v1675919455/Logo/Copy_of_Zosh_Academy_nblljp.png"
+                  alt="Shopwithzosh"
+                  className="h-8 w-8 mr-2"
+                />
+
               </div>
 
               {/* Flyout menus */}
@@ -382,7 +415,7 @@ export default function Navigation() {
 
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  {false ? (
+                  {auth.user?.firstName ? (
                     <div>
                       <Avatar
                         className="text-white"
@@ -397,7 +430,7 @@ export default function Navigation() {
                           cursor: "pointer",
                         }}
                       >
-                        S
+                        {auth.user?.firstName[0].toUpperCase()}
                       </Avatar>
                       {/* <Button
                         id="basic-button"
@@ -418,13 +451,13 @@ export default function Navigation() {
                         }}
                       >
                         <MenuItem onClick={handleCloseUserMenu}>
-                        Profile
+                          Profile
                         </MenuItem>
-                        <MenuItem onClick={()=>navigate("/account/order")}>
-                        My Orders
+                        <MenuItem onClick={() => navigate("/account/order")}>
+                          My Orders
                         </MenuItem>
 
-                        <MenuItem>Logout</MenuItem>
+                        <MenuItem onClick={handleLogout}  >Logout</MenuItem>
                       </Menu>
                     </div>
                   ) : (
@@ -439,10 +472,10 @@ export default function Navigation() {
 
                 {/* Search */}
                 <div className="flex items-center lg:ml-6">
-                
-                  <p onClick={()=>navigate("/products/search")} className="p-2 text-gray-400 hover:text-gray-500">
+
+                  <p onClick={() => navigate("/products/search")} className="p-2 text-gray-400 hover:text-gray-500">
                     <span className="sr-only">Search</span>
-                    
+
                     <MagnifyingGlassIcon
                       className="h-6 w-6"
                       aria-hidden="true"
@@ -453,7 +486,7 @@ export default function Navigation() {
                 {/* Cart */}
                 <div className="ml-4 flow-root lg:ml-6">
                   <Button
-                     className="group -m-2 flex items-center p-2"
+                    className="group -m-2 flex items-center p-2"
                   >
                     <ShoppingBagIcon
                       className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
@@ -470,7 +503,7 @@ export default function Navigation() {
           </div>
         </nav>
       </header>
-       <AuthModal handleClose={handleClose} open={openAuthModal} />
-     </div>
+      <AuthModal handleClose={handleClose} open={openAuthModal} />
+    </div>
   );
 }

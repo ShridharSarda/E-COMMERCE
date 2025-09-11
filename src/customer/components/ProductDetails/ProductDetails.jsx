@@ -1,3 +1,4 @@
+
 import Button from '@mui/material/Button';
 import { Box, LinearProgress, Typography, Rating } from "@mui/material";
 import { Grid } from '@mui/material';
@@ -7,6 +8,12 @@ import HomeSectionCarosel from '../../components/HomeSectionCarosel/HomeSectionC
 import { mens_kurta } from '../../../Data/mens_kurta';
 import HomeSectionCard from '../HomeSectionCard/HomeSectionCard';
 import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { findProductsById } from "../../../State/Product/Action";
+import { useState } from "react";
+import {addItemToCart} from "../../../State/Cart/Action"; 
 // If you are using 'value' from a state hook, it would be defined like this
 // const [value, setValue] = useState(someInitialValue);
 const product = {
@@ -70,10 +77,28 @@ function classNames(...classes) {
 }
 
 export default function ProductDetails() {
-    const navigate=useNavigate();
-    const handleAddToCart=()=>{
-        navigate("/cart")
+     const [selectedSize, setSelectedSize] = useState("");
+    const navigate = useNavigate();
+      const dispatch = useDispatch();
+    const params = useParams();
+     const {products}=useSelector(store=>store);
+const handleAddToCart = () => {
+    if (!selectedSize) {
+        alert("Please select a size");
+        return;
     }
+    const data = { productId: params.productId, size: selectedSize, quantity: 1 };
+    console.log("Cart data:", data);
+ 
+    dispatch(addItemToCart(data));
+    navigate("/cart");
+};
+
+    // productId
+    useEffect(() => {
+        const data = { productId: params.productId };
+        dispatch(findProductsById(data));
+    }, [params.productId]);
     return (
         <div className="bg-white lg:px-20">
             <div className="pt-6">
@@ -110,8 +135,8 @@ export default function ProductDetails() {
                     <div className="flex flex-col items-center">
                         <div className='overlow-hidden rounded-lg max-w-[30rem] max-h-[35rem]'>
                             <img
+                                src={products.product?.imageUrl}
                                 alt={product.images[0].alt}
-                                src={product.images[0].src}
                                 className="row-span-2 aspect-3/4 size-full rounded-lg object-cover max-lg:hidden"
                             />
                         </div>
@@ -136,19 +161,19 @@ export default function ProductDetails() {
                     <div className="lg:col-span-1 max-w-auto max-w-2xl px-4 pb-16 sm:px-6 lg:max-w-7xl lg:px-8 lg:pb-24">
                         <div className="lg:col-span-2">
                             <h1 className="text-lg lg:text-xl font-semibold text-gray-900">
-                                Universaloutfit
+                                 {products.product?.brand}
                             </h1>
                             <h1 className="text-lg lg:text-xl text-gray-900 opacity-60 pt-1">
-                                Casual Puff Sleeves Solid Women White Top
+                                {products.product?.title}
                             </h1>                        </div>
 
                         {/* Options */}
                         <div className="mt-4 lg:row-span-3 lg:mt-0">
                             <h2 className="sr-only">Product information</h2>
                             <div className="flex space-x-5 items-center text-lg lg:text-xl text-gray-900 mt-6">
-                                <p className="font-semibold">₹199</p>
-                                <p className="opacity-50 line-through">₹211</p>
-                                <p className="text-green-600 font-semibold">5% Off</p>
+                                <p className="font-semibold">{products.product?.discountedPrice}</p>
+                                <p className="opacity-50 line-through">{products.product?.price}</p>
+                                <p className="text-green-600 font-semibold">{products.product?.discountPersent}%</p>
                             </div>
                             {/* Reviews */}
                             <div className="mt-6">
@@ -173,29 +198,31 @@ export default function ProductDetails() {
 
                                     <fieldset aria-label="Choose a size" className="mt-4">
                                         <div className="grid grid-cols-4 gap-3">
-                                            {product.sizes.map((size) => (
-                                                <label
-                                                    key={size.id}
-                                                    aria-label={size.name}
-                                                    className="group relative flex items-center justify-center rounded-md border border-gray-300 bg-white p-3 has-checked:border-indigo-600 has-checked:bg-indigo-600 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-indigo-600 has-disabled:border-gray-400 has-disabled:bg-gray-200 has-disabled:opacity-25"
-                                                >
-                                                    <input
-                                                        defaultValue={size.id}
-                                                        defaultChecked={size === product.sizes[2]}
-                                                        name="size"
-                                                        type="radio"
-                                                        disabled={!size.inStock}
-                                                        className="absolute inset-0 appearance-none focus:outline-none disabled:cursor-not-allowed"
-                                                    />
-                                                    <span className="text-sm font-medium text-gray-900 uppercase group-has-checked:text-white">
-                                                        {size.name}
-                                                    </span>
-                                                </label>
-                                            ))}
+{product.sizes.map((size) => (
+  <label
+    key={size.name}
+    aria-label={size.name}
+    className="group relative flex items-center justify-center rounded-md border border-gray-300 bg-white p-3 has-checked:border-indigo-600 has-checked:bg-indigo-600 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-indigo-600 has-disabled:border-gray-400 has-disabled:bg-gray-200 has-disabled:opacity-25"
+  >
+    <input
+      type="radio"
+      name="size"
+      value={size.name}
+      checked={selectedSize === size.name}
+      onChange={() => setSelectedSize(size.name)}
+      disabled={!size.inStock}
+      className="absolute inset-0 appearance-none focus:outline-none disabled:cursor-not-allowed"
+    />
+    <span className="text-sm font-medium text-gray-900 uppercase group-has-checked:text-white">
+      {size.name}
+    </span>
+  </label>
+))}
+
                                         </div>
                                     </fieldset>
                                 </div>
-                                <Button  onClick={handleAddToCart}  variant="contained" sx={{ px: '2rem', py: '1rem', bgcolor: '#9155fd' }}>
+                                <Button onClick={handleAddToCart} variant="contained" sx={{ px: '2rem', py: '1rem', bgcolor: '#9155fd' }}>
                                     ADD to CART
                                 </Button>
                             </form>

@@ -18,10 +18,13 @@ import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from
 import { mens_kurta } from '../../../Data/mens_kurta'
 import ProductCard from './ProductCard'
 import { filters, singleFilter } from './FilterData'
-import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material'
+import { FormControl, FormLabel, RadioGroup, FormControlLabel,Pagination, Radio } from '@mui/material'
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { useLocation, useNavigate } from 'react-router-dom';
-const sortOptions = [
+import { useEffect } from 'react'
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux'
+import { findProducts } from '../../../State/Product/Action'
+ const sortOptions = [
 
   { name: 'Price: Low to High', href: '#', current: false },
   { name: 'Price: High to Low', href: '#', current: false },
@@ -35,33 +38,90 @@ function classNames(...classes) {
 export default function Product() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const location = useLocation();
-  const navigate=useNavigate();
+  const navigate = useNavigate();
+  const param = useParams();
+  const dispatch = useDispatch();
+// pick the correct slice name from combineReducers
+const {product} = useSelector(store=>store);
+  const decodedQueryString = decodeURIComponent(location.search);
+  const searchParamms = new URLSearchParams(decodedQueryString);
+  const colorValue = searchParamms.get("color");
+  const sizeValue = searchParamms.get("size");
+  const priceValue = searchParamms.get("price");
+  const disccount = searchParamms.get("disccount");
+  const sortValue = searchParamms.get("sort");
+  const pageNumber = searchParamms.get("page") || 1;
+  const stock = searchParamms.get("stock");
+
+
+
+  const handlePaginationChange = (event,value) => {
+  const searchParamms = new URLSearchParams(location.search);
+  searchParamms.set("page", value);
+  const query = searchParamms.toString();
+  navigate({ search: `?${query}` });
+};
+
+
+
   const handleFilter = (value, sectionId) => {
     const searchParammms = new URLSearchParams(location.search);
     let filterValue = searchParammms.getAll(sectionId);
     if (filterValue.length > 0 && filterValue[0].split(",").includes(value)) {
       filterValue = filterValue[0].split(",").filter((item) => item != value);
-    
-    if (filterValue.length === 0) {
-      searchParammms.delete(sectionId)
+
+      if (filterValue.length === 0) {
+        searchParammms.delete(sectionId)
+      }
     }
-  }
-    else{
+    else {
       filterValue.push(value)
     }
     if (filterValue.length > 0) {
-    searchParammms.set(sectionId, filterValue.join(","));
-   
+      searchParammms.set(sectionId, filterValue.join(","));
+
     }
-     const query = searchParammms.toString();
+    const query = searchParammms.toString();
     navigate({ search: `?${query}` });
   }
-    const handleRadioFilterChange = (e, sectionId) => {
+  const handleRadioFilterChange = (e, sectionId) => {
     const searchParammms = new URLSearchParams(location.search);
     searchParammms.set(sectionId, e.target.value);
     const query = searchParammms.toString();
     navigate({ search: `?${query}` });
-}
+  }
+
+  useEffect(() => {
+    const [minPrice, maxPrice] = priceValue === null ? [0, 10000] : priceValue.split("-").map(Number);
+
+    const data = {
+      category: param.levelThree,
+      colors: colorValue || [],
+      sizes: sizeValue || [],
+      minPrice,
+      maxPrice,
+      minDiscount: disccount || 0,
+      sort: sortValue || "price_low",
+      pageNumber: pageNumber - 1,
+      pageSize: 5,
+      stock: stock
+    }
+    dispatch(findProducts(data))
+
+
+  }, [
+    param.levelThree,
+    colorValue,
+    sizeValue,
+    priceValue,
+    disccount,
+    sortValue,
+    pageNumber,
+    stock,
+  ]);
+
+
+
 
 
 
@@ -246,7 +306,7 @@ export default function Product() {
                               <div className="flex h-5 shrink-0 items-center">
                                 <div className="group grid size-4 grid-cols-1">
                                   <input
-                                    onChange={()=>handleFilter(option.value,section.id)}
+                                    onChange={() => handleFilter(option.value, section.id)}
                                     defaultValue={option.value}
                                     defaultChecked={option.checked}
                                     id={`filter-${section.id}-${optionIdx}`}
@@ -312,8 +372,8 @@ export default function Product() {
                                   {section.options.map((option, optionIdx) => (
                                     <>
                                       <FormControlLabel
-                                      onChange={(e) => handleRadioFilterChange
-                                        (e, section.id)}
+                                        onChange={(e) => handleRadioFilterChange
+                                          (e, section.id)}
                                         value={option.value}
                                         control={<Radio />}
                                         label={option.label}
@@ -334,14 +394,19 @@ export default function Product() {
               {/* Product grid */}
               <div className="lg:col-span-4 w-full">
                 <div className="flex flex-wrap justify-center bg-white py-5">
-                  {mens_kurta.map((item) => (<ProductCard product={item} />))}
+                  {product.products && product.products?.content?.map((item) => (<ProductCard product={item} />))}
                 </div>
               </div>
             </div>
           </section>
+          <section className="w-full px=[3.6rem]">
+            <div className="px-4 py-5 flex justify-center">
+              <Pagination count={product.products?.totalPages} color="secondary" onChange={handlePaginationChange} />
+            </div>
+          </section>
         </main>
-      </div>
     </div>
+    </div >
   )
 }
 
