@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { findProductsById } from "../../../State/Product/Action";
 import { useState } from "react";
-import {addItemToCart} from "../../../State/Cart/Action"; 
+import { addItemToCart } from "../../../State/Cart/Action";
 // If you are using 'value' from a state hook, it would be defined like this
 // const [value, setValue] = useState(someInitialValue);
 const product = {
@@ -77,22 +77,23 @@ function classNames(...classes) {
 }
 
 export default function ProductDetails() {
-     const [selectedSize, setSelectedSize] = useState("");
+    const [selectedSize, setSelectedSize] = useState("");
     const navigate = useNavigate();
-      const dispatch = useDispatch();
+    const dispatch = useDispatch();
     const params = useParams();
-     const {products}=useSelector(store=>store);
-const handleAddToCart = () => {
-    if (!selectedSize) {
-        alert("Please select a size");
-        return;
-    }
-    const data = { productId: params.productId, size: selectedSize, quantity: 1 };
-    console.log("Cart data:", data);
- 
-    dispatch(addItemToCart(data));
-    navigate("/cart");
-};
+    const { products } = useSelector(store => store);
+    const handleAddToCart = () => {
+        if (!selectedSize) {
+            alert("Please select a size");
+            return;
+        }
+        const data = { productId: params.productId, size: selectedSize, quantity: 1 };
+        
+        console.log("Cart data:", data);
+
+        dispatch(addItemToCart(data));
+        navigate("/cart");
+    };
 
     // productId
     useEffect(() => {
@@ -135,8 +136,8 @@ const handleAddToCart = () => {
                     <div className="flex flex-col items-center">
                         <div className='overlow-hidden rounded-lg max-w-[30rem] max-h-[35rem]'>
                             <img
-                                src={products.product?.imageUrl}
-                                alt={product.images[0].alt}
+                                src={products?.product?.imageUrl}
+                                alt=""
                                 className="row-span-2 aspect-3/4 size-full rounded-lg object-cover max-lg:hidden"
                             />
                         </div>
@@ -161,7 +162,7 @@ const handleAddToCart = () => {
                     <div className="lg:col-span-1 max-w-auto max-w-2xl px-4 pb-16 sm:px-6 lg:max-w-7xl lg:px-8 lg:pb-24">
                         <div className="lg:col-span-2">
                             <h1 className="text-lg lg:text-xl font-semibold text-gray-900">
-                                 {products.product?.brand}
+                                {products.product?.brand}
                             </h1>
                             <h1 className="text-lg lg:text-xl text-gray-900 opacity-60 pt-1">
                                 {products.product?.title}
@@ -198,26 +199,26 @@ const handleAddToCart = () => {
 
                                     <fieldset aria-label="Choose a size" className="mt-4">
                                         <div className="grid grid-cols-4 gap-3">
-{product.sizes.map((size) => (
-  <label
-    key={size.name}
-    aria-label={size.name}
-    className="group relative flex items-center justify-center rounded-md border border-gray-300 bg-white p-3 has-checked:border-indigo-600 has-checked:bg-indigo-600 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-indigo-600 has-disabled:border-gray-400 has-disabled:bg-gray-200 has-disabled:opacity-25"
-  >
-    <input
-      type="radio"
-      name="size"
-      value={size.name}
-      checked={selectedSize === size.name}
-      onChange={() => setSelectedSize(size.name)}
-      disabled={!size.inStock}
-      className="absolute inset-0 appearance-none focus:outline-none disabled:cursor-not-allowed"
-    />
-    <span className="text-sm font-medium text-gray-900 uppercase group-has-checked:text-white">
-      {size.name}
-    </span>
-  </label>
-))}
+                                            {product.sizes.map((size) => (
+                                                <label
+                                                    key={size.name}
+                                                    aria-label={size.name}
+                                                    className="group relative flex items-center justify-center rounded-md border border-gray-300 bg-white p-3 has-checked:border-indigo-600 has-checked:bg-indigo-600 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-indigo-600 has-disabled:border-gray-400 has-disabled:bg-gray-200 has-disabled:opacity-25"
+                                                >
+                                                    <input
+                                                        type="radio"
+                                                        name="size"
+                                                        value={size.name}
+                                                        checked={selectedSize === size.name}
+                                                        onChange={() => setSelectedSize(size.name)}
+                                                        disabled={!size.inStock}
+                                                        className="absolute inset-0 appearance-none focus:outline-none disabled:cursor-not-allowed"
+                                                    />
+                                                    <span className="text-sm font-medium text-gray-900 uppercase group-has-checked:text-white">
+                                                        {size.name}
+                                                    </span>
+                                                </label>
+                                            ))}
 
                                         </div>
                                     </fieldset>

@@ -42,7 +42,7 @@ export default function Product() {
   const param = useParams();
   const dispatch = useDispatch();
 // pick the correct slice name from combineReducers
-const {product} = useSelector(store=>store);
+const {products} = useSelector(store=>store);
   const decodedQueryString = decodeURIComponent(location.search);
   const searchParamms = new URLSearchParams(decodedQueryString);
   const colorValue = searchParamms.get("color");
@@ -394,14 +394,14 @@ const {product} = useSelector(store=>store);
               {/* Product grid */}
               <div className="lg:col-span-4 w-full">
                 <div className="flex flex-wrap justify-center bg-white py-5">
-                  {product.products && product.products?.content?.map((item) => (<ProductCard product={item} />))}
+                  {products.products && products.products?.content?.map((item) => (<ProductCard product={item} />))}
                 </div>
               </div>
             </div>
           </section>
           <section className="w-full px=[3.6rem]">
             <div className="px-4 py-5 flex justify-center">
-              <Pagination count={product.products?.totalPages} color="secondary" onChange={handlePaginationChange} />
+              <Pagination count={products.products?.totalPages} color="secondary" onChange={handlePaginationChange} />
             </div>
           </section>
         </main>

@@ -1,20 +1,61 @@
+
+import {React,useState,useEffect  } from 'react';
 import { Button, TextField } from '@mui/material';
-import React from 'react';
 import AdressCard from '../AdressCard/AdressCard';
+import { useDispatch } from 'react-redux';
+import {createOrder} from "../../../State/Order/Action"
+import { useNavigate } from 'react-router-dom';
 
 const DeliveryAddressForm = () => {
+  const dispatch=useDispatch();
+  const navigate=useNavigate();
+
+
+  //add
+    const [savedAddress, setSavedAddress] = useState(null);
+  useEffect(() => {
+    const addressFromStorage = JSON.parse(localStorage.getItem('shippingAddress'));
+    if (addressFromStorage) setSavedAddress(addressFromStorage);
+  }, []);
+
+
+
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log("address", Object.fromEntries(data));
-  };
+    const address = {
+    firstName: data.get("firstName"),
+    lastName: data.get("lastName"),
+    streetAddress: data.get("address"),
+    city: data.get("city"),
+    state: data.get("state"),
+    zipCode: data.get("zip"),
+    mobile: data.get("phoneNumber"),
+};
 
+   //add
+
+    localStorage.setItem('shippingAddress', JSON.stringify(address));
+    setSavedAddress(address); // update state to render AdressCard
+
+
+
+
+
+  //  const savedAddress = JSON.parse(localStorage.getItem("shippingAddress"));
+     const orderData={address,navigate}
+    dispatch(createOrder(orderData));
+  //add
+ navigate("/checkout?step=3&order_id=YOUR_ORDER_ID");
+  };
+ 
   return (
     <div className="w-full flex flex-col lg:flex-row gap-5 h-[30.5rem]">
       {/* LEFT SECTION */}
       <div className="w-full lg:max-w-[40%] border rounded-md shadow-md overflow-y-scroll">
         <div className="p-5 py-7 border-b cursor-pointer">
-          <AdressCard />
+<AdressCard address={savedAddress}/>
           <Button
             sx={{ mt: 2, bgcolor: 'RGB(145 85 253)' }}
             size="large"
@@ -89,7 +130,7 @@ const DeliveryAddressForm = () => {
               autoComplete="given-name"
             />
           </div>
-          <Button
+<Button
             sx={{py:1.5, mt: 3, bgcolor: 'RGB(145 85 253)' }}
             size="large"
             variant="contained"
