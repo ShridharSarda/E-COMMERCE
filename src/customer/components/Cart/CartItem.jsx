@@ -42,12 +42,12 @@ const handleUpdateCartItem = (num) => {
             <div className="flex items-center">
                 <div className="w-[5rem] h-[5rem] lg:w-[9rem] lg:h-[9rem]">
                     <img className="w-full h-full object-cover object-top"
-                        src={item.product.imageUrl} alt="" />
+                        src={item?.product?.imageUrl} alt="" />
                 </div>
                 <div className="ml-5 space-y-1">
-                    <p className="font-semibold">{item.product.title}</p>
+                    <p className="font-semibold">{item?.product?.title}</p>
                     <p className="opacity-70">Size: {item.size}</p>
-                    <p className="opacity-70 mt-2">{item.product.brand}</p>
+                    <p className="opacity-70 mt-2">{item?.product?.brand}</p>
                     {/* Price and discount moved to a new line */}
                     <div className="flex space-x-5 items-center text-gray-900 mt-6 mt-5">
                         <p className="font-semibold">₹{item.discountedPrice}</p>

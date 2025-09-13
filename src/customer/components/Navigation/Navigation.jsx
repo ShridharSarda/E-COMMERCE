@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Modal } from '@mui/material';
 import AuthModal from "../../Auth/AuthModal";
 import { useDispatch, useSelector } from "react-redux";
-import { getUser,logout } from "../../../State/Auth/Action";
+import { getUser, logout } from "../../../State/Auth/Action";
 
 import {
   Bars3Icon,
@@ -71,10 +71,10 @@ export default function Navigation() {
 
 
 
-const handleLogout=()=>{
+  const handleLogout = () => {
     dispatch(logout())
     handleCloseUserMenu()
-}
+  }
 
 
 
@@ -196,11 +196,17 @@ const handleLogout=()=>{
                             >
                               {section.items.map((item) => (
                                 <li key={item.name} className="flow-root">
-                                  <p className="-m-2 block p-2 text-gray-500">
-                                    {"item.name"}
+                                  <p
+                                    onClick={() =>
+                                      handleCategoryClick(category, section, item, () => setOpen(false))
+                                    }
+                                    className="-m-2 block p-2 text-gray-500 cursor-pointer hover:text-gray-800"
+                                  >
+                                    {item.name}
                                   </p>
                                 </li>
                               ))}
+
                             </ul>
                           </div>
                         ))}

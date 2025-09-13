@@ -26,7 +26,7 @@ const savedAddress = JSON.parse(localStorage.getItem("shippingAddress")) || null
     <div>
       <div className='p-5 shadow-lg rounded-s-md border'>
       <AdressCard address={savedAddress}/>
-      </div>
+      </div>  
       
     <div>
       <div className='lg:grid grid-cols-3  relative'>
@@ -67,5 +67,4 @@ const savedAddress = JSON.parse(localStorage.getItem("shippingAddress")) || null
 }
 
 export default OrderSummary
-
 
